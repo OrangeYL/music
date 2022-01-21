@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.orange.music.dao.CollectMapper">
+    <resultMap id="BaseResultMap" type="com.orange.music.domain.Collect">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="TINYINT"/>
+        <result column="song_id" property="songId" jdbcType="INTEGER"/>
+        <result column="song_list_id" property="songListId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,user_id,type,song_id,song_list_id,create_time
+    </sql>
+
+    <insert id="insert" parameterType="Collect">
+        insert into collect
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="collect.id != null">
+                id,
+            </if>
+            <if test="collect.userId != null">
+                user_id,
+            </if>
+            <if test="collect.type != null">
+                type,
+            </if>
+            <if test="collect.songId != null">
+                song_id,
+            </if>
+            <if test="collect.songListId != null">
+                song_list_id,
+            </if>
+            create_time,
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="collect.id != null">
+                #{collect.id},
+            </if>
+            <if test="collect.userId != null">
+                #{collect.userId},
+            </if>
+            <if test="collect.type != null">
+                #{collect.type},
+            </if>
+            <if test="collect.songId != null">
+                #{collect.songId},
+            </if>
+            <if test="collect.songListId != null">
+                #{collect.songListId},
+            </if>
+            now(),
+        </trim>
+    </insert>
+
+    <delete id="delete">
+        delete from collect where id=#{id}
+    </delete>
+
+    <delete id="deleteByUserIdAndSongId">
+        delete from collect where user_id=#{userId} and song_id=#{songId}
+    </delete>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from collect
+    </select>
+
+    <select id="selectByUserId" resultMap="BaseResultMap" parameterType="Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from collect where user_id=#{userId}
+    </select>
+
+    <select id="existCollect" resultType="Integer">
+        select count(*)
+        from collect where user_id=#{userId} and song_id=#{songId}
+    </select>
+
+</mapper>

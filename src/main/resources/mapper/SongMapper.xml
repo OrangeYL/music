@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.orange.music.dao.SongMapper">
+    <resultMap id="BaseResultMap" type="com.orange.music.domain.Song">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="singer_id" property="singerId" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="introduction" property="introduction" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="pic" property="pic" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="ResultMapWithBLOBs" type="com.orange.music.domain.Song" extends="BaseResultMap">
+        <result column="lyric" property="lyric" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,singer_id,name,introduction,create_time,update_time,pic,url
+    </sql>
+
+    <sql id="Blob_Column_List">
+        id,singer_id,name,introduction,create_time,update_time,pic,lyric,url
+    </sql>
+
+    <insert id="insert" parameterType="com.orange.music.domain.Song">
+        insert into song
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="song.id != null">
+                id,
+            </if>
+            <if test="song.singerId != null">
+                singer_id,
+            </if>
+            <if test="song.name != null">
+                name,
+            </if>
+            <if test="song.introduction != null">
+                introduction,
+            </if>
+            create_time,update_time,
+            <if test="song.pic != null">
+                pic,
+            </if>
+            <if test="song.lyric != null">
+                lyric,
+            </if>
+            <if test="song.url != null">
+                url,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="song.id != null">
+                #{song.id},
+            </if>
+            <if test="song.singerId != null">
+                #{song.singerId},
+            </if>
+            <if test="song.name != null">
+                #{song.name},
+            </if>
+            <if test="song.introduction != null">
+                #{song.introduction},
+            </if>
+            now(),now(),
+            <if test="song.pic != null">
+                #{song.pic},
+            </if>
+            <if test="song.lyric != null">
+                #{song.lyric},
+            </if>
+            <if test="song.url != null">
+                #{song.url},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.orange.music.domain.Song">
+        update song
+        <set>
+            <if test="song.singerId != null">
+                singer_id=#{song.singerId},
+            </if>
+            <if test="song.name != null">
+                name=#{song.name},
+            </if>
+            <if test="song.introduction != null">
+                introduction=#{song.introduction},
+            </if>
+                update_time=now(),
+            <if test="song.pic != null">
+                pic=#{song.pic},
+            </if>
+            <if test="song.lyric != null">
+                lyric=#{song.lyric},
+            </if>
+            <if test="song.url != null">
+                url=#{song.url},
+            </if>
+        </set>
+        where id=#{song.id}
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        delete from song where id=#{id}
+    </delete>
+    
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="Integer">
+        select <include refid="Blob_Column_List"/>
+        from song where id=#{id}
+    </select>
+
+    <select id="selectAll" resultMap="ResultMapWithBLOBs">
+        select <include refid="Blob_Column_List"/>
+        from song
+    </select>
+
+    <select id="selectByName" resultMap="ResultMapWithBLOBs" parameterType="String">
+        select <include refid="Blob_Column_List"/>
+        from song where name Like CONCAT('%',#{name},'%')
+    </select>
+
+  <select id="selectBySingerId" resultMap="ResultMapWithBLOBs" parameterType="Integer">
+      select <include refid="Blob_Column_List"/>
+      from song where singer_id=#{singerId}
+  </select>
+
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.orange.music.dao.ListSongMapper">
+    <resultMap id="BaseResultMap" type="com.orange.music.domain.ListSong">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="song_id" property="songId" jdbcType="INTEGER"/>
+        <result column="song_list_id" property="songListId" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id,song_id,song_list_id
+    </sql>
+    
+
+    <insert id="insert" parameterType="com.orange.music.domain.ListSong">
+        insert into list_song
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="listSong.id != null">
+                id,
+            </if>
+            <if test="listSong.songId != null">
+                song_id,
+            </if>
+            <if test="listSong.songListId != null">
+                song_list_id,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="listSong.id != null">
+                #{listSong.id},
+            </if>
+            <if test="listSong.songId != null">
+                #{listSong.songId},
+            </if>
+            <if test="listSong.songListId != null">
+                #{listSong.songListId},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.orange.music.domain.ListSong">
+        update list_song
+        <set>
+            <if test="listSong.songId != null">
+                song_id=#{listSong.songId},
+            </if>
+            <if test="listSong.songListId != null">
+                song_list_id=#{listSong.songListId},
+            </if>
+        </set>
+        where id=#{listSong.id}
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        delete from list_song where id=#{id}
+    </delete>
+    <delete id="deleteBySongIdAndSongListId" parameterType="Integer">
+        delete from list_song where song_id=#{songId} and song_list_id=#{songListId}
+    </delete>
+    
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Integer">
+        select <include refid="Base_Column_List"/>
+        from list_song where id=#{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from list_song
+    </select>
+
+  <select id="selectBySongListId" resultMap="BaseResultMap" parameterType="Integer">
+      select <include refid="Base_Column_List"/>
+      from list_song where song_list_id=#{songListId}
+  </select>
+
+</mapper>

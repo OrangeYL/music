@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.orange.music.dao.RankMapper">
+    <resultMap id="BaseResultMap" type="com.orange.music.domain.Rank">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <id column="song_list_id" property="songListId" jdbcType="INTEGER"/>
+        <id column="consumer_id" property="consumerId" jdbcType="INTEGER"/>
+        <id column="score" property="score" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.orange.music.domain.Rank">
+        insert into `rank`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="rank.id != null">
+                id,
+            </if>
+            <if test="rank.songListId != null">
+                song_list_id,
+            </if>
+            <if test="rank.consumerId != null">
+                consumer_id,
+            </if>
+            <if test="rank.score != null">
+                score,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="rank.id != null">
+                #{rank.id},
+            </if>
+            <if test="rank.songListId != null">
+                #{rank.songListId},
+            </if>
+            <if test="rank.consumerId != null">
+                #{rank.consumerId},
+            </if>
+            <if test="rank.score != null">
+                #{rank.score},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectScoreSum" resultType="Integer" parameterType="Integer">
+        select COALESCE(sum(score), 0) as score
+        from `rank`
+        where song_list_id = #{songListId}
+    </select>
+
+    <select id="selectRankNum" resultType="Integer" parameterType="Integer">
+        select COALESCE(count(id), 0) as num
+        from `rank`
+        where song_list_id = #{songListId}
+    </select>
+
+</mapper>
